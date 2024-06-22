@@ -10,40 +10,18 @@ import {
     Typography,
     Box,
 } from '@mui/material';
-import { VALIDATE_SECURITY_ANSWER_API_ENDPOINT } from '../utils/Constants';
-import axios from "axios";
-import Notification from './Notification';
 
 const schema = yup.object().shape({
     answer: yup.string().required('Answer is required'),
 })
 
-const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
+const ThirdFAForm = ({ email, backToSecondFA }) => {
     const { handleSubmit, control, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
     });
 
-    const [notificationData, setNotificationData] = useState({})
-
-    const postAnswerData = async (userData) => {
-        try {
-            const response = await axios.post(VALIDATE_SECURITY_ANSWER_API_ENDPOINT, { email, ...userData})
-            const data = response.data;
-            if (data && data.success) {
-                toggleShowThirdFA()
-            } else {
-                setNotificationData({
-                    severity: "error",
-                    message: data.message
-                })
-            }
-        } catch(error) {
-          console.log(error)
-        }
-    }
-    
     const onSubmit = (data) => {
-        postAnswerData(data)
+        console.log(data)
     };
 
     return (
@@ -57,15 +35,12 @@ const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
             >
                 <div className='w-full p-10 border-2 rounded-lg shadow-lg'>
                     <Typography component="h1" variant="h5" className='text-center'>
-                        Two-Factor Authentication
+                        Third-Factor Authentication
                     </Typography>
                     <br />
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={2}>
                             <React.Fragment>
-                                <Grid item xs={12}>
-                                    {question}
-                                </Grid>
                                 <Grid item xs={12}>
                                     <Controller
                                         name={`answer`}
@@ -90,19 +65,16 @@ const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
                                 </Button>
                             </Grid>
                             <Grid item xs={12}>
-                                <Button type="submit" fullWidth variant="contained" color="primary" onClick={backToLogin}>
-                                    Go Back To Login
+                                <Button type="submit" fullWidth variant="contained" color="primary" onClick={backToSecondFA}>
+                                    Go Back
                                 </Button>
                             </Grid>
                         </Grid>
                     </form>
-                    {notificationData && notificationData.message != null && (
-                        <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
-                    )}
                 </div>
             </Box>
         </Container>
     );
 }
 
-export default TwoFAForm;
+export default ThirdFAForm;
