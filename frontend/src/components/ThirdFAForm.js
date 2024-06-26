@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
@@ -10,19 +10,85 @@ import {
     Typography,
     Box,
 } from '@mui/material';
+import { CAESAR_CIPHER_CHALLENGE_API_ENDPOINT } from '../utils/Constants';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import Notification from './Notification';
 
 const schema = yup.object().shape({
     answer: yup.string().required('Answer is required'),
 })
 
 const ThirdFAForm = ({ email, backToSecondFA }) => {
+    const navigate = useNavigate();
+    const [ caesarData, updateCaesarData ] = useState({})
+    const [notificationData, setNotificationData] = useState({})
+
     const { handleSubmit, control, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
     });
 
+    const fetchCaesarCipherChallenge = async () => {
+        try {
+            const response = await axios.post(CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, { 
+                action: "generate"
+            })
+            const data = response.data;
+            if (data && data.success) {
+                updateCaesarData(data.data)
+            } else {
+                setNotificationData({
+                    severity: "error",
+                    message: data.message
+                })
+            }
+        } catch(error) {
+            console.log(error)
+            setNotificationData({
+                severity: "error",
+                message: error.message
+            })
+        }
+    }
+
+    const verifyCaesarCipherChallenge = async (dataToPost) => {
+        try {
+            const response = await axios.post(CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, { 
+                action: "verify",
+                data: {
+                    ...caesarData,
+                    plainText: dataToPost.answer
+                }
+            })
+            const data = response.data;
+            if (data && data.success) {
+                setNotificationData({
+                    severity: "success",
+                    message: data.message
+                })
+                navigate('/');
+            } else {
+                setNotificationData({
+                    severity: "error",
+                    message: data.data
+                })
+            }
+        } catch(error) {
+            console.log(error)
+            setNotificationData({
+                severity: "error",
+                message: error.message
+            })
+        }
+    }
+    
     const onSubmit = (data) => {
-        console.log(data)
+        verifyCaesarCipherChallenge(data)
     };
+
+    useEffect(() => {
+        fetchCaesarCipherChallenge()
+    }, [])
 
     return (
         <Container component="main" maxWidth="sm">
@@ -42,6 +108,14 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                         <Grid container spacing={2}>
                             <React.Fragment>
                                 <Grid item xs={12}>
+                                    {caesarData && caesarData.cipherText && (
+                                        <>
+                                            <p>Decrypt the message below using Ceasar Cipher</p>
+                                            <p>Cipher Text: {caesarData.cipherText}</p>
+                                            <p>Encrypted with Key: {caesarData.key}</p>
+                                            <br />
+                                        </>
+                                    )}
                                     <Controller
                                         name={`answer`}
                                         control={control}
@@ -71,6 +145,9 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                             </Grid>
                         </Grid>
                     </form>
+                    {notificationData && notificationData.message != null && (
+                        <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
+                    )}
                 </div>
             </Box>
         </Container>

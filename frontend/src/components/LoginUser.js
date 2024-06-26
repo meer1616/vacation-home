@@ -14,6 +14,7 @@ import TwoFAForm from './TwoFAForm';
 import axios from "axios";
 import { LOGIN_USER_API_ENDPOINT } from '../utils/Constants';
 import ThirdFAForm from './ThirdFAForm';
+import Notification from './Notification';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -29,6 +30,7 @@ const LoginUser = () => {
   const [showTwoFA, toggleShowTwoFA] = useState(false)
   const [showThirdFA, toggleShowThirdFA] = useState(false)
   const [twoFAData, updateTwoFAData] = useState({})
+  const [notificationData, setNotificationData] = useState({})
 
   const onSubmit = (data) => {
     postUserData(data)
@@ -43,8 +45,18 @@ const LoginUser = () => {
         toggleShowTwoFA(!showTwoFA)
         updateTwoFAData({ question: data.data.securityQuestion, email: userData.email })
       }
+      else {
+        setNotificationData({
+          severity: "error",
+          message: data.message
+        })
+      }
     } catch(error) {
       console.log(error)
+      setNotificationData({
+        severity: "error",
+        message: error.message
+      })
     }
   }
 
@@ -117,6 +129,9 @@ const LoginUser = () => {
       )}
       { showThirdFA && (
         <ThirdFAForm email={twoFAData.email} backToSecondFA={() => { toggleShowThirdFA(false); toggleShowTwoFA(true)}} />
+      )}
+      {notificationData && notificationData.message != null && (
+        <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
       )}
     </>
 

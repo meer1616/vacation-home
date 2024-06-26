@@ -3,6 +3,7 @@ export const AUTH_API_ENDPOINT = process.env.REACT_APP_AUTH_API_ENDPOINT || "htt
 export const REGISTER_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/register"
 export const LOGIN_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/login"
 export const VALIDATE_SECURITY_ANSWER_API_ENDPOINT = AUTH_API_ENDPOINT + "/validate-security-answer"
+export const CAESAR_CIPHER_CHALLENGE_API_ENDPOINT = AUTH_API_ENDPOINT + "/caesar-cipher"
 
 export const securityQuestions = [
     "What was the name of your first pet",

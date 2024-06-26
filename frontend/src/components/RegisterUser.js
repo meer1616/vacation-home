@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { REGISTER_USER_API_ENDPOINT, securityQuestions } from '../utils/Constants';
 import Notification from './Notification';
+import { useNavigate } from 'react-router-dom';
 
 const schema = yup.object().shape({
     firstName: yup.string().required('First Name is required'),
@@ -35,6 +36,7 @@ const RegisterUser = () => {
     });
     
     const [message, setMessage] = useState("")
+    const navigate = useNavigate();
 
     const onSubmit = (data) => {
         postUserData(data)
@@ -46,6 +48,7 @@ const RegisterUser = () => {
             const data = response.data;
             if (data && data.success) {
                 setMessage(data.message)
+                navigate('/')
             }
         } catch(error) {
             console.log(error)
@@ -181,7 +184,7 @@ const RegisterUser = () => {
                                         helperText={errors.securityQuestion ? errors.securityQuestion.message : ''}
                                     >
                                         {
-                                            securityQuestions.map((item) => (<MenuItem value={item}>{item}</MenuItem>))
+                                            securityQuestions.map((item, index) => (<MenuItem value={item} key={index}>{item}</MenuItem>))
                                         }
                                     </Select>
                                 )}

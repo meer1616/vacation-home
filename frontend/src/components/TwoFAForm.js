@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
@@ -38,7 +38,11 @@ const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
                 })
             }
         } catch(error) {
-          console.log(error)
+            console.log(error)
+            setNotificationData({
+                severity: "error",
+                message: error.message
+            })
         }
     }
     

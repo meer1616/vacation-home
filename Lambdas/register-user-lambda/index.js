@@ -35,7 +35,17 @@ exports.handler = async (event) => {
       })
     ]
 
-    await getCognitoPool().signUp(email, password, attributeList, null);
+    try {
+      await getCognitoPool().signUp(email, password, attributeList, null);
+    }
+    catch (error) {
+      console.log(error)
+      return {
+        statusCode: 500,
+        success: false,
+        message: "User is already present"
+      };
+    }
 
     const params = {
       TableName: "Users",

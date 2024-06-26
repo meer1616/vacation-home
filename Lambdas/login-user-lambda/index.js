@@ -68,7 +68,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 500,
         success: false,
-        message: "Could not authenticate user",
+        message: "Invalid Credentials",
         error: authError
       };
     }
