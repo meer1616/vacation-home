@@ -9,12 +9,16 @@ import {
     Container,
     Typography,
     Select,
-    MenuItem
+    MenuItem,
+    FormControl,
+    FormHelperText,
+    InputLabel
 } from '@mui/material';
 import axios from "axios";
 import { REGISTER_USER_API_ENDPOINT, securityQuestions } from '../utils/Constants';
 import Notification from './Notification';
 import { useNavigate } from 'react-router-dom';
+import ProgressBarOverlay from './ProgressBarOverlay';
 
 const schema = yup.object().shape({
     firstName: yup.string().required('First Name is required'),
@@ -35,10 +39,13 @@ const RegisterUser = () => {
         resolver: yupResolver(schema),
     });
     
-    const [message, setMessage] = useState("")
+    const [notificationData, setNotificationData] = useState({})
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const onSubmit = (data) => {
+        setLoading(true);
         postUserData(data)
     };
 
@@ -46,12 +53,27 @@ const RegisterUser = () => {
         try {
             const response = await axios.post(REGISTER_USER_API_ENDPOINT, userData)
             const data = response.data;
+            setLoading(false);
             if (data && data.success) {
-                setMessage(data.message)
+                setNotificationData({
+                    severity: "success",
+                    message: data.message
+                })
                 navigate('/')
+            } else {
+                setNotificationData({
+                    severity: "error",
+                    message: "Registration Failed. Please try again"
+                })
             }
         } catch(error) {
             console.log(error)
+            setNotificationData({
+                severity: "error",
+                message: "Registration Failed. Please try again"
+            })
+        } finally {
+            setLoading(false);
         }
     }
     
@@ -170,26 +192,35 @@ const RegisterUser = () => {
                                 )}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="securityQuestion"
-                                control={control}
-                                defaultValue="What was the name of your first pet?"
-                                render={({ field }) => (
-                                    <Select
-                                        {...field}
-                                        fullWidth
-                                        variant='outlined'
-                                        error={!!errors.securityQuestion}
-                                        helperText={errors.securityQuestion ? errors.securityQuestion.message : ''}
-                                    >
-                                        {
-                                            securityQuestions.map((item, index) => (<MenuItem value={item} key={index}>{item}</MenuItem>))
-                                        }
-                                    </Select>
-                                )}
-                            />
-                        </Grid>
+                        {securityQuestions && (
+                            <Grid item xs={12}>
+                                <FormControl fullWidth variant='outlined' error={!!errors.securityQuestion}>
+                                    <InputLabel htmlFor="securityQuestion">Security Question</InputLabel>
+                                    <Controller
+                                        name="securityQuestion"
+                                        control={control}
+                                        defaultValue=""
+                                        render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            fullWidth
+                                            label="Security Question"
+                                            inputProps={{
+                                            id: 'securityQuestion',
+                                            }}
+                                        >
+                                            {securityQuestions.map((item, index) => (
+                                                <MenuItem value={item} key={item}>{item}</MenuItem>
+                                            ))}
+                                        </Select>
+                                        )}
+                                    />
+                                    {errors.securityQuestion && (
+                                        <FormHelperText>{errors.securityQuestion.message}</FormHelperText>
+                                    )}
+                                </FormControl>
+                            </Grid>
+                        )}
                         <Grid item xs={12}>
                             <Controller
                                 name="securityAnswer"
@@ -214,9 +245,10 @@ const RegisterUser = () => {
                         </Grid>
                     </Grid>
                 </form>
-                {message && message != null && (
-                    <Notification message={message} show={true}/>
+                {notificationData && notificationData.message != null && (
+                    <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
                 )}
+                <ProgressBarOverlay loading={loading} />
             </div>
         </Container>
     );

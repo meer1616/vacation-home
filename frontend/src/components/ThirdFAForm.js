@@ -14,6 +14,7 @@ import { CAESAR_CIPHER_CHALLENGE_API_ENDPOINT } from '../utils/Constants';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Notification from './Notification';
+import ProgressBarOverlay from './ProgressBarOverlay';
 
 const schema = yup.object().shape({
     answer: yup.string().required('Answer is required'),
@@ -23,6 +24,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
     const navigate = useNavigate();
     const [ caesarData, updateCaesarData ] = useState({})
     const [notificationData, setNotificationData] = useState({})
+    const [loading, setLoading] = useState(false);
 
     const { handleSubmit, control, formState: { errors }, getValues } = useForm({
         resolver: yupResolver(schema),
@@ -61,6 +63,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                 }
             })
             const data = response.data;
+            setLoading(false)
             if (data && data.success) {
                 setNotificationData({
                     severity: "success",
@@ -74,6 +77,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                 })
             }
         } catch(error) {
+            setLoading(false)
             console.log(error)
             setNotificationData({
                 severity: "error",
@@ -83,6 +87,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
     }
     
     const onSubmit = (data) => {
+        setLoading(true)
         verifyCaesarCipherChallenge(data)
     };
 
@@ -148,6 +153,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                     {notificationData && notificationData.message != null && (
                         <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
                     )}
+                    <ProgressBarOverlay loading={loading} />
                 </div>
             </Box>
         </Container>

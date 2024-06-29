@@ -13,6 +13,7 @@ import {
 import { VALIDATE_SECURITY_ANSWER_API_ENDPOINT } from '../utils/Constants';
 import axios from "axios";
 import Notification from './Notification';
+import ProgressBarOverlay from './ProgressBarOverlay';
 
 const schema = yup.object().shape({
     answer: yup.string().required('Answer is required'),
@@ -24,11 +25,13 @@ const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
     });
 
     const [notificationData, setNotificationData] = useState({})
+    const [loading, setLoading] = useState(false);
 
     const postAnswerData = async (userData) => {
         try {
             const response = await axios.post(VALIDATE_SECURITY_ANSWER_API_ENDPOINT, { email, ...userData})
             const data = response.data;
+            setLoading(false)
             if (data && data.success) {
                 toggleShowThirdFA()
             } else {
@@ -39,14 +42,18 @@ const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
             }
         } catch(error) {
             console.log(error)
+            setLoading(false)
             setNotificationData({
                 severity: "error",
                 message: error.message
             })
+        } finally {
+            setLoading(false)
         }
     }
     
     const onSubmit = (data) => {
+        setLoading(true)
         postAnswerData(data)
     };
 
@@ -103,6 +110,7 @@ const TwoFAForm = ({ question, email, backToLogin, toggleShowThirdFA }) => {
                     {notificationData && notificationData.message != null && (
                         <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
                     )}
+                    <ProgressBarOverlay loading={loading} />
                 </div>
             </Box>
         </Container>

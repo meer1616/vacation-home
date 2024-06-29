@@ -15,6 +15,7 @@ import axios from "axios";
 import { LOGIN_USER_API_ENDPOINT } from '../utils/Constants';
 import ThirdFAForm from './ThirdFAForm';
 import Notification from './Notification';
+import ProgressBarOverlay from './ProgressBarOverlay';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -31,8 +32,10 @@ const LoginUser = () => {
   const [showThirdFA, toggleShowThirdFA] = useState(false)
   const [twoFAData, updateTwoFAData] = useState({})
   const [notificationData, setNotificationData] = useState({})
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data) => {
+    setLoading(true)
     postUserData(data)
   };
 
@@ -40,6 +43,7 @@ const LoginUser = () => {
     try {
       const response = await axios.post(LOGIN_USER_API_ENDPOINT, userData)
       const data = response.data;
+      setLoading(false)
       if (data && data.success) {
         toggleLogin(!showLogin)
         toggleShowTwoFA(!showTwoFA)
@@ -53,10 +57,13 @@ const LoginUser = () => {
       }
     } catch(error) {
       console.log(error)
+      setLoading(false);
       setNotificationData({
         severity: "error",
         message: error.message
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -133,6 +140,7 @@ const LoginUser = () => {
       {notificationData && notificationData.message != null && (
         <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
       )}
+      <ProgressBarOverlay loading={loading} />
     </>
 
   );
