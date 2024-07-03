@@ -3,9 +3,15 @@ import boto3
 
 def lambda_handler(event, context):
     sns_client = boto3.client('sns')
+    userId = event.get('userId')    
     
-
-    topic_arn = 'arn:aws:sns:us-east-1:481189138737:UserloginTopic'
+    if not userId:
+        return {
+            'statusCode': 400,
+            'body': json.dumps('No userId provided')
+        }
+        
+    topic_arn = f'arn:aws:sns:us-east-1:481189138737:{userId}_userlogintopic'
     
 
     # The message you want to send

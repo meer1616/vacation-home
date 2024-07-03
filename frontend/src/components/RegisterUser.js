@@ -38,7 +38,7 @@ const RegisterUser = () => {
     const { handleSubmit, control, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
     });
-    
+
     const [notificationData, setNotificationData] = useState({})
     const [loading, setLoading] = useState(false);
 
@@ -66,7 +66,7 @@ const RegisterUser = () => {
                     message: "Registration Failed. Please try again"
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             setNotificationData({
                 severity: "error",
@@ -76,7 +76,7 @@ const RegisterUser = () => {
             setLoading(false);
         }
     }
-    
+
     return (
         <Container component="main" maxWidth="sm" className='mt-10'>
             <div className='p-12 border-2 rounded-lg shadow-lg'
@@ -201,18 +201,18 @@ const RegisterUser = () => {
                                         control={control}
                                         defaultValue=""
                                         render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            fullWidth
-                                            label="Security Question"
-                                            inputProps={{
-                                            id: 'securityQuestion',
-                                            }}
-                                        >
-                                            {securityQuestions.map((item, index) => (
-                                                <MenuItem value={item} key={item}>{item}</MenuItem>
-                                            ))}
-                                        </Select>
+                                            <Select
+                                                {...field}
+                                                fullWidth
+                                                label="Security Question"
+                                                inputProps={{
+                                                    id: 'securityQuestion',
+                                                }}
+                                            >
+                                                {securityQuestions.map((item, index) => (
+                                                    <MenuItem value={item} key={item}>{item}</MenuItem>
+                                                ))}
+                                            </Select>
                                         )}
                                     />
                                     {errors.securityQuestion && (
@@ -246,7 +246,7 @@ const RegisterUser = () => {
                     </Grid>
                 </form>
                 {notificationData && notificationData.message != null && (
-                    <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
+                    <Notification message={notificationData.message} severity={notificationData.severity} show={true} />
                 )}
                 <ProgressBarOverlay loading={loading} />
             </div>
