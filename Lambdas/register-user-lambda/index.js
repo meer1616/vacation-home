@@ -1,5 +1,6 @@
 const AWS = require("aws-sdk");
 const { CognitoUserAttribute, CognitoUserPool } = require('amazon-cognito-identity-js');
+const { v4: uuidv4 } = require('uuid');
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 const poolData = {
@@ -47,9 +48,11 @@ exports.handler = async (event) => {
       };
     }
 
+    const userId = uuidv4();
     const params = {
       TableName: "Users",
       Item: {
+        userId,
         email,
         firstName,
         lastName,
@@ -62,18 +65,23 @@ exports.handler = async (event) => {
     };
 
     await dynamoDB.put(params).promise();
+    
     return {
+      userId,
+      email,
       statusCode: 200,
       success: true,
-      message: "User registered successfully"
+      message: "User registered successfully",
     };
   }
   catch (error) {
     console.log(error)
     return {
+      email,
       statusCode: 500,
       success: false,
       message: "Could not register user",
+      userId: null,
       error
     };
   }

@@ -59,6 +59,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                 action: "verify",
                 data: {
                     ...caesarData,
+                    email,
                     plainText: dataToPost.answer
                 }
             })
