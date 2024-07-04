@@ -1,4 +1,43 @@
+const jwt = require('jsonwebtoken');
+const AWS = require("aws-sdk");
+
+const dynamoDB = new AWS.DynamoDB.DocumentClient();
+
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+const getDataFromDynamoDB = async (email) => {
+    try {
+        const params = {
+            TableName: 'Users',
+            KeyConditionExpression: 'email = :email',
+            ExpressionAttributeValues: {
+              ':email': email
+            },
+            Limit: 1,
+            ScanIndexForward: false
+        };
+        
+        const data = await dynamoDB.query(params).promise();
+        return data.Items;
+    }
+    catch(error) {
+        return error;
+    }
+}
+
+const generateJWTToken = async (email) => {
+    try {
+        const [userData] = await getDataFromDynamoDB(email);
+        const token = await jwt.sign({
+            exp: Math.floor(Date.now() / 1000) + (60 * 60),
+            data: userData
+        }, process.env.JWT_SECRET);
+        return { token, userId: userData.userId, email: userData.email };
+    } catch(error) {
+        console.log(error)
+        return error
+    }
+}
 
 exports.handler = async (event) => {
     const { action, data } = event
@@ -22,14 +61,24 @@ exports.handler = async (event) => {
             }
         }
     } else if (action.toLowerCase() == "verify") {
-        const { key, cipherText, plainText } = data
+        const { key, cipherText, plainText, email } = data
         const expectedPlainText = caesarDecrypt(cipherText, key)
         if (expectedPlainText.toLowerCase() == plainText.toLowerCase()) {
-            return {
-                statusCode: 200,
-                success: true,
-                data: "Verified Successfully"
-            };            
+            try {
+                const userData = await generateJWTToken(email)
+                return {
+                    ...userData,
+                    statusCode: 200,
+                    success: true,
+                    data: "Verified Successfully"
+                };
+            } catch(error) {
+                return {
+                    statusCode: 500,
+                    success: false,
+                    data: "Failed to generate JWT Token"
+                }
+            }
         } else {
             return {
                 statusCode: 200,
