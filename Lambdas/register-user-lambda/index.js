@@ -20,7 +20,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({ error: "Missing required fields" }),
       };
     }
-  
+
     const attributeList = [
       new CognitoUserAttribute({
         Name: "email",
@@ -63,7 +63,7 @@ exports.handler = async (event) => {
         securityQuestion
       },
     };
-  
+
     await dynamoDB.put(params).promise();
     
     return {
