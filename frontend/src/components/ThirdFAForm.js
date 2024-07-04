@@ -64,17 +64,20 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                 }
             })
             const data = response.data;
-            console.log("data in verify", data);
-            axios.post(SNS_PUBLISH_LOGIN_EMAIL, { userId: data.userId }).then((response) => {
-                console.log("response in login", response);
-            }).catch((error) => { console.log("error in login", error); })
+
             setLoading(false)
             if (data && data.success) {
                 setNotificationData({
                     severity: "success",
                     message: data.message
                 })
-                navigate('/');
+                axios.post(SNS_PUBLISH_LOGIN_EMAIL, { userId: data.userId }).then((res) => {
+                    if (res.data.success) navigate('/');
+
+
+                }).catch((err) => {
+                    console.log("err in publish login email", err);
+                })
             } else {
                 setNotificationData({
                     severity: "error",

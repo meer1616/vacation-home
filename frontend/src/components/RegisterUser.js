@@ -54,7 +54,6 @@ const RegisterUser = () => {
             const response = await axios.post(REGISTER_USER_API_ENDPOINT, userData)
             const data = response.data;
             setLoading(false);
-            console.log("DEDDED", data)
             if (data && data.success) {
                 setNotificationData({
                     severity: "success",
@@ -62,10 +61,12 @@ const RegisterUser = () => {
                 })
                 axios.post(SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC, { email: data.email, userId: data.userId }).then((resp) => {
                     console.log("SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC", resp.data);
+                    if (resp.data.success) {
+                        navigate('/login')
+                    }
                 }).catch((err) => {
                     console.log("err", err);
                 })
-                navigate('/')
             } else {
                 setNotificationData({
                     severity: "error",
