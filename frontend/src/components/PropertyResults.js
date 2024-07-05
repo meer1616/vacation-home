@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Container, Grid, Card, CardContent, Typography, Button, TextField } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -33,7 +34,7 @@ const PropertyResults = () => {
             return;
         }
 
-        if (check_in_epoch >= check_out_epoch){
+        if (check_in_epoch >= check_out_epoch) {
             alert('Check-out date must be after check-in date');
             return;
         }
@@ -57,6 +58,13 @@ const PropertyResults = () => {
                 alert('Error fetching properties');
             });
     };
+
+    const navigate = useNavigate();
+
+    const bookProperty = async (event, room_id) => {
+        event.preventDefault();
+        navigate(`/booking/${room_id}`);
+    }
 
     return (
         <Container>
@@ -134,7 +142,7 @@ const PropertyResults = () => {
                                                 <Typography variant="body2" component="p">
                                                     Capacity: {property.capacity}
                                                 </Typography>
-                                                <Button variant="contained" color="primary">
+                                                <Button variant="contained" color="primary" onClick={(event) => bookProperty(event, property.id)}>
                                                     Book Now
                                                 </Button>
                                             </CardContent>
