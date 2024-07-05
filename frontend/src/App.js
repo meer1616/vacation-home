@@ -4,6 +4,7 @@ import RegisterUser from './components/RegisterUser';
 import LoginUser from './components/LoginUser';
 import TwoFAForm from './components/TwoFAForm';
 import Home from './components/Home';
+import UserProfile from './components/UserProfile';
 function App() {
   return (
     <div className="App">

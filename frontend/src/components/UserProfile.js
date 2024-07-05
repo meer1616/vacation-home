@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Typography, Box, Grid, Card } from '@mui/material'
+import { Typography, Box, Grid, Card, Button } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 const UserProfile = () => {
     const [firstName, setFirstName] = useState('testFirstName');
@@ -76,6 +77,9 @@ const UserProfile = () => {
                 </Grid>
                 </Grid>
             </Card>
+            <Button component={Link} to="/" variant="contained" color="primary">
+                Go to Home Page
+            </Button>
         </Box>
     );
 }
