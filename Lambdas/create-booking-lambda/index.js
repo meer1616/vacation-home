@@ -32,7 +32,8 @@ const isValidBookingObject = (bookingObject) => {
         || !bookingObject.first_name
         || !bookingObject.last_name
         || !bookingObject.room_id
-        || !bookingObject.email) {
+        || !bookingObject.email
+        || !bookingObject.room_number) {
         return {
             isValid: false,
             message: "Missing required fields"
@@ -83,7 +84,8 @@ const createBooking = async (bookingObject) => {
                 first_name: bookingObject.first_name,
                 last_name: bookingObject.last_name,
                 room_id: bookingObject.room_id,
-                email: bookingObject.email
+                email: bookingObject.email,
+                room_number: bookingObject.room_number
             }
         }
 
@@ -103,7 +105,7 @@ const createBooking = async (bookingObject) => {
 }
 
 exports.handler = async (event, context) => {
-    const { check_in, check_out, number_of_people, first_name, last_name, room_id, email } = JSON.parse(event.body);
-    const bookingObject = { check_in, check_out, number_of_people, first_name, last_name, room_id, email };
+    const { check_in, check_out, number_of_people, first_name, last_name, room_id, email, room_number } = JSON.parse(event.body);
+    const bookingObject = { check_in, check_out, number_of_people, first_name, last_name, room_id, email, room_number};
     return await createBooking(bookingObject);
 }
