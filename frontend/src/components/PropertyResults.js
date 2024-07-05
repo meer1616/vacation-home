@@ -5,6 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import axios from 'axios';
+import { PROPERTIES_RESULT_API_ENDPOINT } from '../utils/Constants';
 
 const schema = yup.object().shape({
     check_in: yup.date().required('Check-in date is required'),
@@ -22,26 +24,38 @@ const PropertyResults = () => {
         resolver: yupResolver(schema)
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const check_in_epoch = Math.floor(new Date(data.check_in).getTime() / 1000);
         const check_out_epoch = Math.floor(new Date(data.check_out).getTime() / 1000);
 
-        if (check_in_epoch >= check_out_epoch) {
+        if (check_in_epoch < Math.floor(Date.now() / 1000) || check_out_epoch < Math.floor(Date.now() / 1000)) {
+            alert('Check-in or Check-out date must be today or after');
+            return;
+        }
+
+        if (check_in_epoch >= check_out_epoch){
             alert('Check-out date must be after check-in date');
             return;
         }
 
         const searchRequest = {
-            check_in: check_in_epoch,
-            check_out: check_out_epoch
+            "check_in": check_in_epoch,
+            "check_out": check_out_epoch
         };
 
         console.log(searchRequest);
 
         // Submit formData to your API or handle it as needed
         // load sample data
-        
-        
+        const endpoint = PROPERTIES_RESULT_API_ENDPOINT;
+
+        await axios.post(endpoint, searchRequest)
+            .then((response) => {
+                setPropertyResults(response.data);
+            })
+            .catch((error) => {
+                alert('Error fetching properties');
+            });
     };
 
     return (

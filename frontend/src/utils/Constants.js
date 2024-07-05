@@ -5,6 +5,8 @@ export const LOGIN_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/login"
 export const VALIDATE_SECURITY_ANSWER_API_ENDPOINT = AUTH_API_ENDPOINT + "/validate-security-answer"
 export const CAESAR_CIPHER_CHALLENGE_API_ENDPOINT = AUTH_API_ENDPOINT + "/caesar-cipher"
 
+export const PROPERTIES_RESULT_API_ENDPOINT = process.env.REACT_APP_PROPERTY_API_ENDPOINT
+
 export const securityQuestions = [
     "What was the name of your first pet",
     "What was the name of your elementary school",
