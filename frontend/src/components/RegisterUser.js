@@ -70,7 +70,7 @@ const RegisterUser = () => {
             } else {
                 setNotificationData({
                     severity: "error",
-                    message: "Registration Failed. Please try again"
+                    message: data.message || "Registration Failed. Please try again"
                 })
             }
         } catch (error) {
