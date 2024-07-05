@@ -5,6 +5,26 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+const updateLoginTimeInDynamoDB = async (email) => {
+    try {
+        const lastLoginAt = new Date().toISOString();
+        const params = {
+            TableName: 'Users',
+            Key: {
+                'email': email
+            },
+            UpdateExpression: 'SET lastLoginAt = :lastLoginAt',
+            ExpressionAttributeValues: {
+                ':lastLoginAt': lastLoginAt
+            },
+            ReturnValues: 'UPDATED_NEW'
+        };
+        await dynamoDB.update(params).promise();
+    } catch(error) {
+        return error
+    }
+}
+
 const getDataFromDynamoDB = async (email) => {
     try {
         const params = {
@@ -66,6 +86,7 @@ exports.handler = async (event) => {
         if (expectedPlainText.toLowerCase() == plainText.toLowerCase()) {
             try {
                 const userData = await generateJWTToken(email)
+                await updateLoginTimeInDynamoDB(email)
                 return {
                     ...userData,
                     statusCode: 200,
