@@ -40,23 +40,8 @@ const PropertyResults = () => {
 
         // Submit formData to your API or handle it as needed
         // load sample data
-        setPropertyResults([
-            {
-                type: 'Single Room',
-                rate: 100,
-                capacity: 1
-            },
-            {
-                type: 'Double Room',
-                rate: 150,
-                capacity: 2
-            },
-            {
-                type: 'Suite',
-                rate: 200,
-                capacity: 4
-            }
-        ]);
+        
+        
     };
 
     return (
@@ -128,6 +113,9 @@ const PropertyResults = () => {
                                                 </Typography>
                                                 <Typography color="textSecondary">
                                                     Rate per day: CAD$ {property.rate}
+                                                </Typography>
+                                                <Typography color="body2" component="p">
+                                                    Room number: {property.room_number}
                                                 </Typography>
                                                 <Typography variant="body2" component="p">
                                                     Capacity: {property.capacity}
