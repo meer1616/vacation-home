@@ -1,9 +1,12 @@
 export const AUTH_API_ENDPOINT = process.env.REACT_APP_AUTH_API_ENDPOINT || "https://v0dqq00bsf.execute-api.us-east-1.amazonaws.com/production"
+export const SNS_ENDPOINT = process.env.REACT_APP_SNS_ENDPOINT || "https://yt5mvuctcb.execute-api.us-east-1.amazonaws.com/prod"
 
 export const REGISTER_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/register"
 export const LOGIN_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/login"
 export const VALIDATE_SECURITY_ANSWER_API_ENDPOINT = AUTH_API_ENDPOINT + "/validate-security-answer"
 export const CAESAR_CIPHER_CHALLENGE_API_ENDPOINT = AUTH_API_ENDPOINT + "/caesar-cipher"
+export const SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC = `${SNS_ENDPOINT}/createlogintopicsubs`
+export const SNS_PUBLISH_LOGIN_EMAIL = `${SNS_ENDPOINT}/snspublishloginemail`
 
 export const securityQuestions = [
     "What was the name of your first pet",

@@ -10,6 +10,22 @@ const poolData = {
 
 const getCognitoPool = () => new CognitoUserPool(poolData);
 
+const getDataFromDynamoDB = async (email) => {
+  const params = {
+    TableName: 'Users',
+    KeyConditionExpression: 'email = :email',
+    ExpressionAttributeValues: {
+      ':email': email
+    },
+    ProjectionExpression: 'securityQuestion',
+    Limit: 1,
+    ScanIndexForward: false
+  };
+  
+  const data = await dynamoDB.query(params).promise();
+  return data.Items;
+}
+
 exports.handler = async (event) => {
   try {
     const { email, firstName, lastName, password, address, phoneNumber, isAdmin = false, securityAnswer, securityQuestion } = event;
@@ -37,6 +53,14 @@ exports.handler = async (event) => {
     ]
 
     try {
+      const userData = await getDataFromDynamoDB(email)
+      if (userData && userData.length > 0) {
+        return {
+          statusCode: 500,
+          success: false,
+          message: "User is already present"
+        };
+      }
       await getCognitoPool().signUp(email, password, attributeList, null);
     }
     catch (error) {
@@ -44,7 +68,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 500,
         success: false,
-        message: "User is already present"
+        message: "Registration Failed. Please try again"
       };
     }
 
