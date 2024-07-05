@@ -49,6 +49,7 @@ exports.handler = async (event) => {
     }
 
     const userId = uuidv4();
+    const lastLoginAt = new Date().toISOString();
     const params = {
       TableName: "Users",
       Item: {
@@ -60,7 +61,8 @@ exports.handler = async (event) => {
         address,
         isAdmin,
         securityAnswer,
-        securityQuestion
+        securityQuestion,
+        lastLoginAt
       },
     };
 
