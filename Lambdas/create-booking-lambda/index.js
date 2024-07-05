@@ -12,7 +12,7 @@ const checkIfBookingExists = async (room_id, check_in, check_out) => {
         const response = await dynamodb.scan(params).promise();
         const bookings = response.Items || [];
         const clash = bookings.filter(booking => {
-            return booking.room_id === room_id && (booking.check_in < check_out || booking.check_out > check_in);
+            return booking.room_id === room_id && (booking.check_in >= check_in && booking.check_in < check_out) || (booking.check_out > check_in && booking.check_out <= check_out);
         });
         return clash.length > 0;
     } catch (err) {
@@ -106,6 +106,6 @@ const createBooking = async (bookingObject) => {
 
 exports.handler = async (event, context) => {
     const { check_in, check_out, number_of_people, first_name, last_name, room_id, email, room_number } = JSON.parse(event.body);
-    const bookingObject = { check_in, check_out, number_of_people, first_name, last_name, room_id, email, room_number};
+    const bookingObject = { check_in, check_out, number_of_people, first_name, last_name, room_id, email, room_number };
     return await createBooking(bookingObject);
 }
