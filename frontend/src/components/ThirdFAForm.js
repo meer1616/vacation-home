@@ -72,9 +72,10 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                     message: data.message
                 })
                 axios.post(SNS_PUBLISH_LOGIN_EMAIL, { userId: data.userId }).then((res) => {
-                    if (res.data.success) navigate('/');
-
-
+                    if (res.data.success) {
+                        localStorage.setItem('user', JSON.stringify({ email: data.email, userId: data.userId }));
+                        navigate('/');
+                    }
                 }).catch((err) => {
                     console.log("err in publish login email", err);
                 })
