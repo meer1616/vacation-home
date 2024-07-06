@@ -8,15 +8,12 @@ const dynamoDbClient = new DynamoDBClient({ region: 'us-east-1' });
 const topicArn = process.env.TOPIC_ARN || 'arn:aws:sns:us-east-1:481189138737:';
 
 exports.handler = async (event) => {
-
     console.log("Event: ", event);
 
     for (const record of event.Records) {
-
         console.log("record", record);
 
         const bookingDetails = JSON.parse(record.body);
-        const reservationId = uuidv4();
         let isBookingApproved;
 
         if (!bookingDetails.check_in || !bookingDetails.check_out || !bookingDetails.number_of_people || !bookingDetails.first_name || !bookingDetails.last_name || !bookingDetails.room_id || !bookingDetails.email || !bookingDetails.room_number || !bookingDetails.userId) {
@@ -28,23 +25,28 @@ exports.handler = async (event) => {
         }
 
         try {
+            const reservationId = uuidv4();
+
             const reservationParams = {
                 TableName: process.env.TABLE_NAME || 'roombooking',
                 Item: {
-                    bookingRef: reservationId,
-                    check_in: bookingDetails.check_in,
-                    check_out: bookingDetails.check_out,
-                    number_of_people: bookingDetails.number_of_people,
-                    first_name: bookingDetails.first_name,
-                    last_name: bookingDetails.last_name,
-                    room_id: bookingDetails.room_id,
-                    email: bookingDetails.email,
-                    room_number: bookingDetails.room_number,
-                    userId: bookingDetails.userId,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
+                    bookingRef: { S: reservationId },
+                    check_in: { S: bookingDetails.check_in },
+                    check_out: { S: bookingDetails.check_out },
+                    number_of_people: { N: bookingDetails.number_of_people.toString() },
+                    first_name: { S: bookingDetails.first_name },
+                    last_name: { S: bookingDetails.last_name },
+                    room_id: { S: bookingDetails.room_id },
+                    email: { S: bookingDetails.email },
+                    room_number: { S: bookingDetails.room_number },
+                    userId: { S: bookingDetails.userId },
+                    createdAt: { S: new Date().toISOString() },
+                    updatedAt: { S: new Date().toISOString() },
                 },
             };
+
+            console.log("reser", JSON.stringify(reservationParams, null, 2));
+
             const putCommand = new PutItemCommand(reservationParams);
             await dynamoDbClient.send(putCommand);
             isBookingApproved = true;
