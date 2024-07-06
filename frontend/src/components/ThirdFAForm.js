@@ -10,7 +10,7 @@ import {
     Typography,
     Box,
 } from '@mui/material';
-import { CAESAR_CIPHER_CHALLENGE_API_ENDPOINT } from '../utils/Constants';
+import { CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, SNS_PUBLISH_LOGIN_EMAIL } from '../utils/Constants';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Notification from './Notification';
@@ -22,7 +22,7 @@ const schema = yup.object().shape({
 
 const ThirdFAForm = ({ email, backToSecondFA }) => {
     const navigate = useNavigate();
-    const [ caesarData, updateCaesarData ] = useState({})
+    const [caesarData, updateCaesarData] = useState({})
     const [notificationData, setNotificationData] = useState({})
     const [loading, setLoading] = useState(false);
 
@@ -32,7 +32,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
 
     const fetchCaesarCipherChallenge = async () => {
         try {
-            const response = await axios.post(CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, { 
+            const response = await axios.post(CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, {
                 action: "generate"
             })
             const data = response.data;
@@ -44,7 +44,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                     message: data.message
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
             setNotificationData({
                 severity: "error",
@@ -55,7 +55,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
 
     const verifyCaesarCipherChallenge = async (dataToPost) => {
         try {
-            const response = await axios.post(CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, { 
+            const response = await axios.post(CAESAR_CIPHER_CHALLENGE_API_ENDPOINT, {
                 action: "verify",
                 data: {
                     ...caesarData,
@@ -64,20 +64,27 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                 }
             })
             const data = response.data;
+
             setLoading(false)
             if (data && data.success) {
                 setNotificationData({
                     severity: "success",
                     message: data.message
                 })
-                navigate('/');
+                axios.post(SNS_PUBLISH_LOGIN_EMAIL, { userId: data.userId }).then((res) => {
+                    if (res.data.success) navigate('/');
+
+
+                }).catch((err) => {
+                    console.log("err in publish login email", err);
+                })
             } else {
                 setNotificationData({
                     severity: "error",
                     message: data.data
                 })
             }
-        } catch(error) {
+        } catch (error) {
             setLoading(false)
             console.log(error)
             setNotificationData({
@@ -86,7 +93,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
             })
         }
     }
-    
+
     const onSubmit = (data) => {
         setLoading(true)
         verifyCaesarCipherChallenge(data)
@@ -152,7 +159,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
                         </Grid>
                     </form>
                     {notificationData && notificationData.message != null && (
-                        <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
+                        <Notification message={notificationData.message} severity={notificationData.severity} show={true} />
                     )}
                     <ProgressBarOverlay loading={loading} />
                 </div>
