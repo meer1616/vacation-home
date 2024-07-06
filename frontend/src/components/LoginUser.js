@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import TwoFAForm from './TwoFAForm';
 import axios from "axios";
-import { LOGIN_USER_API_ENDPOINT } from '../utils/Constants';
+import { LOGIN_USER_API_ENDPOINT, SNS_PUBLISH_LOGIN_EMAIL } from '../utils/Constants';
 import ThirdFAForm from './ThirdFAForm';
 import Notification from './Notification';
 import ProgressBarOverlay from './ProgressBarOverlay';
@@ -44,10 +44,12 @@ const LoginUser = () => {
       const response = await axios.post(LOGIN_USER_API_ENDPOINT, userData)
       const data = response.data;
       setLoading(false)
+      console.log("data in login", data);
       if (data && data.success) {
         toggleLogin(!showLogin)
         toggleShowTwoFA(!showTwoFA)
         updateTwoFAData({ question: data.data.securityQuestion, email: userData.email })
+
       }
       else {
         setNotificationData({
@@ -55,7 +57,7 @@ const LoginUser = () => {
           message: data.message
         })
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error)
       setLoading(false);
       setNotificationData({
@@ -83,62 +85,62 @@ const LoginUser = () => {
                 Login
               </Typography>
               <br />
-                <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Controller
-                        name="email"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            variant="outlined"
-                            fullWidth
-                            label="Email Address"
-                            error={!!errors.email}
-                            helperText={errors.email ? errors.email.message : ''}
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Controller
-                        name="password"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            variant="outlined"
-                            fullWidth
-                            label="Password"
-                            type="password"
-                            error={!!errors.password}
-                            helperText={errors.password ? errors.password.message : ''}
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button type="submit" fullWidth variant="contained" color="primary">
-                        Login
-                      </Button>
-                    </Grid>
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="email"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          variant="outlined"
+                          fullWidth
+                          label="Email Address"
+                          error={!!errors.email}
+                          helperText={errors.email ? errors.email.message : ''}
+                        />
+                      )}
+                    />
                   </Grid>
-                </form>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="password"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          variant="outlined"
+                          fullWidth
+                          label="Password"
+                          type="password"
+                          error={!!errors.password}
+                          helperText={errors.password ? errors.password.message : ''}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button type="submit" fullWidth variant="contained" color="primary">
+                      Login
+                    </Button>
+                  </Grid>
+                </Grid>
+              </form>
             </div>
           </Box>
         </Container>
       )}
-      { showTwoFA && (
-        <TwoFAForm  question={twoFAData.question} email={twoFAData.email} backToLogin={() => { toggleLogin(true); toggleShowTwoFA(false)}} toggleShowThirdFA={() => { toggleShowThirdFA(true); toggleShowTwoFA(false)}}/>
+      {showTwoFA && (
+        <TwoFAForm question={twoFAData.question} email={twoFAData.email} backToLogin={() => { toggleLogin(true); toggleShowTwoFA(false) }} toggleShowThirdFA={() => { toggleShowThirdFA(true); toggleShowTwoFA(false) }} />
       )}
-      { showThirdFA && (
-        <ThirdFAForm email={twoFAData.email} backToSecondFA={() => { toggleShowThirdFA(false); toggleShowTwoFA(true)}} />
+      {showThirdFA && (
+        <ThirdFAForm email={twoFAData.email} backToSecondFA={() => { toggleShowThirdFA(false); toggleShowTwoFA(true) }} />
       )}
       {notificationData && notificationData.message != null && (
-        <Notification message={notificationData.message} severity={notificationData.severity} show={true}/>
+        <Notification message={notificationData.message} severity={notificationData.severity} show={true} />
       )}
       <ProgressBarOverlay loading={loading} />
     </>
