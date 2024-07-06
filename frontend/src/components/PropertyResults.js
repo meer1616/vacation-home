@@ -20,6 +20,7 @@ const PropertyResults = () => {
     const {
         control,
         handleSubmit,
+        getValues,
         formState: { errors }
     } = useForm({
         resolver: yupResolver(schema)
@@ -44,12 +45,7 @@ const PropertyResults = () => {
             "check_out": check_out_epoch
         };
 
-        console.log(searchRequest);
-
-        // Submit formData to your API or handle it as needed
-        // load sample data
         const endpoint = PROPERTIES_RESULT_API_ENDPOINT;
-
         await axios.post(endpoint, searchRequest)
             .then((response) => {
                 setPropertyResults(response.data);
@@ -63,7 +59,8 @@ const PropertyResults = () => {
 
     const bookProperty = async (event, room_id) => {
         event.preventDefault();
-        navigate(`/booking/${room_id}`);
+        const data = getValues();
+        navigate(`/booking/${room_id}`, { state: { check_in: data.check_in, check_out: data.check_out } });
     }
 
     return (

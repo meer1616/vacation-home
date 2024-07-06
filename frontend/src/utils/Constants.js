@@ -6,6 +6,8 @@ export const VALIDATE_SECURITY_ANSWER_API_ENDPOINT = AUTH_API_ENDPOINT + "/valid
 export const CAESAR_CIPHER_CHALLENGE_API_ENDPOINT = AUTH_API_ENDPOINT + "/caesar-cipher"
 
 export const PROPERTIES_RESULT_API_ENDPOINT = process.env.REACT_APP_PROPERTY_API_ENDPOINT
+export const FETCH_PROPERTY_API_ENDPOINT = process.env.REACT_APP_FETCH_PROPERTY_API_ENDPOINT
+export const BOOK_PROPERTY_API_ENDPOINT = process.env.REACT_APP_BOOK_PROPERTY_API_ENDPOINT
 
 export const securityQuestions = [
     "What was the name of your first pet",
