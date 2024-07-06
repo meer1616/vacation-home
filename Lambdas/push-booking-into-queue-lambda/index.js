@@ -1,7 +1,7 @@
 const { SQSClient, SendMessageCommand } = require("@aws-sdk/client-sqs");
 
 const sqsClient = new SQSClient({ region: 'us-east-1' });
-const queueUrl = process.env.QUEUE_URL || "https://sqs.us-east-1.amazonaws.com/481189138737/roombookingqueue";
+const queueUrl = process.env.QUEUE_URL;
 
 exports.handler = async (event) => {
 

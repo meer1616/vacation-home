@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const snsClient = new SNSClient({ region: 'us-east-1' });
 const dynamoDbClient = new DynamoDBClient({ region: 'us-east-1' });
 
-const topicArn = process.env.TOPIC_ARN || 'arn:aws:sns:us-east-1:481189138737:';
+const topicArn = process.env.TOPIC_ARN;
 
 exports.handler = async (event) => {
     console.log("Event: ", event);
@@ -15,6 +15,7 @@ exports.handler = async (event) => {
 
         const bookingDetails = JSON.parse(record.body);
         let isBookingApproved;
+        let reservationId = null;  // Initialize reservationId
 
         if (!bookingDetails.check_in || !bookingDetails.check_out || !bookingDetails.number_of_people || !bookingDetails.first_name || !bookingDetails.last_name || !bookingDetails.room_id || !bookingDetails.email || !bookingDetails.room_number || !bookingDetails.userId) {
             isBookingApproved = false;
@@ -25,15 +26,15 @@ exports.handler = async (event) => {
         }
 
         try {
-            const reservationId = uuidv4();
+            reservationId = uuidv4();
 
             const reservationParams = {
-                TableName: process.env.TABLE_NAME || 'roombooking',
+                TableName: process.env.TABLE_NAME,
                 Item: {
                     bookingRef: { S: reservationId },
                     check_in: { S: bookingDetails.check_in },
                     check_out: { S: bookingDetails.check_out },
-                    number_of_people: { N: bookingDetails.number_of_people.toString() },
+                    number_of_people: { S: bookingDetails.number_of_people.toString() },
                     first_name: { S: bookingDetails.first_name },
                     last_name: { S: bookingDetails.last_name },
                     room_id: { S: bookingDetails.room_id },
@@ -64,7 +65,7 @@ exports.handler = async (event) => {
         const params = {
             Message: message,
             Subject: subject,
-            TopicArn: topicArn + bookingDetails.userId + "_userlogintopic",
+            TopicArn: topicArn + bookingDetails.userId + "_usertopic",
             MessageAttributes: {
                 'email': {
                     DataType: 'String',

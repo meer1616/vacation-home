@@ -21,7 +21,7 @@ def lambda_handler(event, context):
         }
     
     # Create a new SNS topic with combined string
-    topic_name = "userlogintopic"
+    topic_name = "usertopic"
     combined_string = f"{userId}_{topic_name}"
     
     create_topic_response = sns_client.create_topic(Name=combined_string)
