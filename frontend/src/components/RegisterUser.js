@@ -15,7 +15,7 @@ import {
     InputLabel
 } from '@mui/material';
 import axios from "axios";
-import { REGISTER_USER_API_ENDPOINT, securityQuestions } from '../utils/Constants';
+import { REGISTER_USER_API_ENDPOINT, securityQuestions, SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC } from '../utils/Constants';
 import Notification from './Notification';
 import { useNavigate } from 'react-router-dom';
 import ProgressBarOverlay from './ProgressBarOverlay';
@@ -59,11 +59,18 @@ const RegisterUser = () => {
                     severity: "success",
                     message: data.message
                 })
-                navigate('/')
+                axios.post(SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC, { email: data.email, userId: data.userId }).then((resp) => {
+                    console.log("SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC", resp.data);
+                    if (resp.data.success) {
+                        navigate('/login')
+                    }
+                }).catch((err) => {
+                    console.log("err", err);
+                })
             } else {
                 setNotificationData({
                     severity: "error",
-                    message: "Registration Failed. Please try again"
+                    message: data.message || "Registration Failed. Please try again"
                 })
             }
         } catch (error) {
