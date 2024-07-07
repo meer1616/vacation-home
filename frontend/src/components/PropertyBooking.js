@@ -4,8 +4,9 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { FETCH_PROPERTY_API_ENDPOINT, BOOK_PROPERTY_API_ENDPOINT } from '../utils/Constants';
+import { FETCH_PROPERTY_API_ENDPOINT, BOOK_PROPERTY_API_ENDPOINT, FETCH_PROPERTY_REVIEWS_API_ENDPOINT } from '../utils/Constants';
 import axios from 'axios';
+import { isLoggedin, getStringFromDateObject, getStringFromEpoch } from '../utils/helper';
 
 const schema = yup.object().shape({
     number_of_people: yup.number().required('Number of people is required').positive().integer(),
@@ -43,7 +44,20 @@ const PropertyBooking = ({ check_in, check_out }) => {
                 });
         }
 
+        const fetchReviews = async (room_id) => {
+            const endpoint = FETCH_PROPERTY_REVIEWS_API_ENDPOINT;
+            const request = { "room_id": room_id };
+            await axios.post(endpoint, request)
+                .then((response) => {
+                    setReviews(response.data);
+                })
+                .catch((error) => {
+                    alert('Error fetching reviews');
+                });
+        }
+
         fetchProperty(id);
+        fetchReviews(id);
     }, []);
 
     const onSubmit = async (data) => {
@@ -52,7 +66,7 @@ const PropertyBooking = ({ check_in, check_out }) => {
         const user = JSON.parse(localStorage.getItem('user'));
         const email = user?.email;
         const userId = user?.id;
-        
+
         const bookingRequest = {
             "check_in": check_in_epoch,
             "check_out": check_out_epoch,
@@ -68,7 +82,7 @@ const PropertyBooking = ({ check_in, check_out }) => {
         const endpoint = BOOK_PROPERTY_API_ENDPOINT;
         await axios.post(endpoint, bookingRequest)
             .then((response) => {
-                if(response.status === 200){
+                if (response.status === 200) {
                     alert('Booking request submitted successfully');
                     // todo: update this to booking history page
                     navigate('/', { replace: true });
@@ -84,14 +98,6 @@ const PropertyBooking = ({ check_in, check_out }) => {
 
     const goBack = () => {
         navigate('/properties', { replace: true });
-    }
-
-    const getFormattedDate = (date) => {
-        const day = date.toLocaleDateString('en-US', { day: 'numeric' });
-        const month = date.toLocaleDateString('en-US', { month: 'long' });
-        const year = date.toLocaleDateString('en-US', { year: 'numeric' });
-
-        return `${day} ${month}, ${year}`;
     }
 
     return (
@@ -131,8 +137,8 @@ const PropertyBooking = ({ check_in, check_out }) => {
                     {
                         state && (
                             <Box>
-                                <Typography variant="body1">Check-in Date: {getFormattedDate(state?.check_in)}</Typography>
-                                <Typography variant="body1">Check-out Date: {getFormattedDate(state?.check_out)}</Typography>
+                                <Typography variant="body1">Check-in Date: {getStringFromDateObject(state?.check_in)}</Typography>
+                                <Typography variant="body1">Check-out Date: {getStringFromDateObject(state?.check_out)}</Typography>
                                 <Typography variant="subtitle2" color="#007bff">Please note that both check in and check out times are fixed at 12:00 PM noon.</Typography>
                             </Box>
                         )
@@ -200,7 +206,7 @@ const PropertyBooking = ({ check_in, check_out }) => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary" disabled={!state} fullWidth>
+                                <Button type="submit" variant="contained" color="primary" disabled={!state || isLoggedin} fullWidth>
                                     Submit
                                 </Button>
                             </Grid>
@@ -208,47 +214,47 @@ const PropertyBooking = ({ check_in, check_out }) => {
                     </form>
                 </Grid>
             </Grid>
-            {
-                reviews && reviews.length === 0 && (
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Typography variant="h4">Reviews</Typography>
-                        <Typography variant="h6">No reviews yet</Typography>
-                    </Box>
-                )
-            }
-            {
-                reviews && reviews.length > 0 && (
-                    <Grid container spacing={1}>
-                        {
-                            reviews.map((review) => {
-                                return (
-                                    <Grid item xs={12}>
-                                        <Box
-                                            display="flex"
-                                            flexDirection="column"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                        >
-                                            <Typography variant="h6">{review.first_name} {review.last_name}</Typography>
-                                            <Box display="flex" flexDirection="row">
-                                                <Typography variant="subtitle2">{review.rating} Stars</Typography>
-                                                <Typography variant="subtitle2">{review.date}</Typography>
+            <Box my={3}>
+                <Typography variant="h4">Reviews</Typography>
+                {
+                    reviews && reviews.length === 0 && (
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            <Typography variant="h6">No reviews yet</Typography>
+                        </Box>
+                    )
+                }
+                {
+                    reviews && reviews.length > 0 && (
+                        <Grid container spacing={1}>
+                            {
+                                reviews.map((review) => {
+                                    return (
+                                        <Grid item xs={12}>
+                                            <Box
+                                                display="flex"
+                                                flexDirection="column"
+                                            >
+                                                <Typography variant="h6">{review.name}</Typography>
+                                                <Box display="flex" flexDirection="row" justifyContent="space-between">
+                                                    <Typography variant="subtitle1">{review.rating} Stars (out of 5) </Typography>
+                                                    <Typography variant="subtitle1">{getStringFromEpoch(review.date)}</Typography>
+                                                </Box>
+                                                <Typography variant="body1">{review.description}</Typography>
                                             </Box>
-                                            <Typography variant="body1">{review.description}</Typography>
-                                        </Box>
-                                    </Grid>
-                                )
+                                        </Grid>
+                                    )
 
-                            })
-                        }
-                    </Grid>
-                )
-            }
+                                })
+                            }
+                        </Grid>
+                    )
+                }
+            </Box>
         </Container>
     )
 }
