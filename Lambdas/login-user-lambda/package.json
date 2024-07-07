@@ -1,0 +1,16 @@
+{
+  "name": "login-user-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amazon-cognito-identity-js": "^6.3.12",
+    "aws-sdk": "^2.1646.0"
+  }
+}

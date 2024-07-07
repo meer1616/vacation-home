@@ -1,12 +1,24 @@
 import './App.css';
-import TextField from '@mui/material/TextField';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import RegisterUser from './components/RegisterUser';
+import LoginUser from './components/LoginUser';
+import TwoFAForm from './components/TwoFAForm';
+import Home from './components/Home';
+import PropertyBooking from './components/PropertyBooking';
+import PropertyResults from './components/PropertyResults';
 function App() {
   return (
-    <div className="App">
-      <br />
-      <span className='text-red-600'>hi there</span>
-      <br />
-      <TextField id="outlined-basic" label="Full name" variant="outlined" />
+    <div >
+      <Router>
+        <Routes>
+          <Route path="/register" element={<RegisterUser />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginUser />} />
+          <Route path="/twofa" element={<TwoFAForm />} />
+          <Route path="/properties" element={<PropertyResults />} />
+          <Route path="/booking/:id" element={<PropertyBooking />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
