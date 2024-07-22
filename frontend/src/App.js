@@ -6,9 +6,10 @@ import TwoFAForm from './components/TwoFAForm';
 import Home from './components/Home';
 import PropertyBooking from './components/PropertyBooking';
 import PropertyResults from './components/PropertyResults';
+import UserProfile from './components/UserProfile';
 function App() {
   return (
-    <div >
+    <div className="App">
       <Router>
         <Routes>
           <Route path="/register" element={<RegisterUser />} />
@@ -17,6 +18,7 @@ function App() {
           <Route path="/twofa" element={<TwoFAForm />} />
           <Route path="/properties" element={<PropertyResults />} />
           <Route path="/booking/:id" element={<PropertyBooking />} />
+          <Route path="/profile" element={<UserProfile />} />
         </Routes>
       </Router>
     </div>
