@@ -72,18 +72,30 @@ const LoginUser = () => {
   return (
     <>
       {showLogin && (
-        <Container component="main" maxWidth="xs">
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="100vh"
-          >
-            <div className='w-full p-10 border-2 rounded-lg shadow-lg'>
-              <Typography component="h1" variant="h5" className='text-center mt-60'>
+        // <Container component="main" maxWidth="xs">
+        <Box
+          display="flex"
+          flexDirection="row"
+          // alignItems="center"
+          // justifyContent="center"
+          minHeight="100vh"
+        >
+          <div style={{ border: "10px soild red" }} >
+            <img src='/login.jpg' style={{ height: "100vh", width: "50vw" }}></img>
+          </div>
+          {/* <div className='w-full p-10 border-2 rounded-lg shadow-lg'> */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "auto" }}>
+            <div className='border-black'>
+
+              <Typography component="h2" variant="h3" className='text-center mt-60'>
+                Welcome to Dal Vacation
+              </Typography>
+              <br />
+              <br />
+              <Typography component="h1" variant="h4" className='text-center mt-60'>
                 Login
               </Typography>
+
               <br />
               <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <Grid container spacing={2}>
@@ -130,8 +142,10 @@ const LoginUser = () => {
                 </Grid>
               </form>
             </div>
-          </Box>
-        </Container>
+
+          </div>
+        </Box>
+        // </Container>
       )}
       {showTwoFA && (
         <TwoFAForm question={twoFAData.question} email={twoFAData.email} backToLogin={() => { toggleLogin(true); toggleShowTwoFA(false) }} toggleShowThirdFA={() => { toggleShowThirdFA(true); toggleShowTwoFA(false) }} />

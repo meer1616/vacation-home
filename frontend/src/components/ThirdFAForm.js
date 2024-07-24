@@ -69,7 +69,7 @@ const ThirdFAForm = ({ email, backToSecondFA }) => {
             if (data && data.success) {
                 setNotificationData({
                     severity: "success",
-                    message: data.message
+                    message: data.data
                 })
                 axios.post(SNS_PUBLISH_LOGIN_EMAIL, { userId: data.userId }).then((res) => {
                     if (res.data.success) {

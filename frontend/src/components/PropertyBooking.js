@@ -4,7 +4,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { FETCH_PROPERTY_API_ENDPOINT, BOOK_PROPERTY_API_ENDPOINT, FETCH_PROPERTY_REVIEWS_API_ENDPOINT } from '../utils/Constants';
+import { FETCH_PROPERTY_API_ENDPOINT, BOOK_PROPERTY_API_ENDPOINT, FETCH_PROPERTY_REVIEWS_API_ENDPOINT, SQS_BOOKING_END_POINT } from '../utils/Constants';
 import axios from 'axios';
 import { isLoggedin, getStringFromDateObject, getStringFromEpoch } from '../utils/helper';
 
@@ -79,7 +79,7 @@ const PropertyBooking = ({ check_in, check_out }) => {
         };
         console.log(bookingRequest);
 
-        const endpoint = BOOK_PROPERTY_API_ENDPOINT;
+        const endpoint = SQS_BOOKING_END_POINT;
         await axios.post(endpoint, bookingRequest)
             .then((response) => {
                 if (response.status === 200) {

@@ -1,5 +1,5 @@
 export const AUTH_API_ENDPOINT = process.env.REACT_APP_AUTH_API_ENDPOINT || "https://v0dqq00bsf.execute-api.us-east-1.amazonaws.com/production"
-export const SNS_ENDPOINT = process.env.REACT_APP_SNS_ENDPOINT || "https://zkaxfj6jp3.execute-api.us-east-1.amazonaws.com/prod"
+export const SNS_ENDPOINT = process.env.REACT_APP_SNS_ENDPOINT || "https://cpz3465j2j.execute-api.us-east-1.amazonaws.com/prod"
 
 export const REGISTER_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/register"
 export const LOGIN_USER_API_ENDPOINT = AUTH_API_ENDPOINT + "/login"
@@ -7,6 +7,7 @@ export const VALIDATE_SECURITY_ANSWER_API_ENDPOINT = AUTH_API_ENDPOINT + "/valid
 export const CAESAR_CIPHER_CHALLENGE_API_ENDPOINT = AUTH_API_ENDPOINT + "/caesar-cipher"
 export const SNS_SUBSCRIBE_INDIVIDUAL_LOGIN_TOPIC = `${SNS_ENDPOINT}/createsubsctopic`
 export const SNS_PUBLISH_LOGIN_EMAIL = `${SNS_ENDPOINT}/publish-login`
+export const SQS_BOOKING_END_POINT = `${SNS_ENDPOINT}/push-booking-to-queue`
 
 export const PROPERTIES_RESULT_API_ENDPOINT = process.env.REACT_APP_PROPERTY_API_ENDPOINT
 export const FETCH_PROPERTY_API_ENDPOINT = process.env.REACT_APP_FETCH_PROPERTY_API_ENDPOINT

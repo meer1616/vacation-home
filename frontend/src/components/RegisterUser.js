@@ -85,179 +85,194 @@ const RegisterUser = () => {
     }
 
     return (
-        <Container component="main" maxWidth="sm" className='mt-10'>
-            <div className='p-12 border-2 rounded-lg shadow-lg'
-            //  style={{ border: "1px solid black" }}
+        // <Container component="main" maxWidth="sm" className='mt-10'>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div>
+                <img src="/register.png" alt="" style={{ height: "120vh", width: "55vw" }} />
+            </div>
+
+            <div
+                // className='p-12 border-2 rounded-lg shadow-lg'
+                style={{ width: "50vw", display: "flex", justifyContent: "center", alignItems: "center" }}
             >
-                <Typography component="h1" variant="h5" className='text-center'>
-                    Registration Form
-                </Typography>
-                <br />
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="firstName"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="First Name"
-                                        error={!!errors.firstName}
-                                        helperText={errors.firstName ? errors.firstName.message : ''}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="lastName"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Last Name"
-                                        error={!!errors.lastName}
-                                        helperText={errors.lastName ? errors.lastName.message : ''}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Email Address"
-                                        error={!!errors.email}
-                                        helperText={errors.email ? errors.email.message : ''}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="password"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Password"
-                                        type="password"
-                                        error={!!errors.password}
-                                        helperText={errors.password ? errors.password.message : ''}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="phoneNumber"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        type='number'
-                                        label="Phone Number"
-                                        error={!!errors.phoneNumber}
-                                        helperText={errors.phoneNumber ? errors.phoneNumber.message : ''}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="address"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Address"
-                                        error={!!errors.address}
-                                        helperText={errors.address ? errors.address.message : ''}
-                                    />
-                                )}
-                            />
-                        </Grid>
-                        {securityQuestions && (
+                <div style={{ width: "70%" }}>
+                    <br />
+                    <Typography component="h1" variant="h5" className='text-center'>
+                        Register for Dal Vacation account
+                    </Typography>
+                    {/* <Typography component="h1" variant="h5" className='text-center'>
+                        Registration Form
+                    </Typography> */}
+                    <br />
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <FormControl fullWidth variant='outlined' error={!!errors.securityQuestion}>
-                                    <InputLabel htmlFor="securityQuestion">Security Question</InputLabel>
-                                    <Controller
-                                        name="securityQuestion"
-                                        control={control}
-                                        defaultValue=""
-                                        render={({ field }) => (
-                                            <Select
-                                                {...field}
-                                                fullWidth
-                                                label="Security Question"
-                                                inputProps={{
-                                                    id: 'securityQuestion',
-                                                }}
-                                            >
-                                                {securityQuestions.map((item, index) => (
-                                                    <MenuItem value={item} key={item}>{item}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        )}
-                                    />
-                                    {errors.securityQuestion && (
-                                        <FormHelperText>{errors.securityQuestion.message}</FormHelperText>
+                                <Controller
+                                    name="firstName"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="First Name"
+                                            error={!!errors.firstName}
+                                            helperText={errors.firstName ? errors.firstName.message : ''}
+                                        />
                                     )}
-                                </FormControl>
+                                />
                             </Grid>
-                        )}
-                        <Grid item xs={12}>
-                            <Controller
-                                name="securityAnswer"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <TextField
-                                        {...field}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Enter Your Answer"
-                                        error={!!errors.securityAnswer}
-                                        helperText={errors.securityAnswer ? errors.securityAnswer.message : ''}
-                                    />
-                                )}
-                            />
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="lastName"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="Last Name"
+                                            error={!!errors.lastName}
+                                            helperText={errors.lastName ? errors.lastName.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="Email Address"
+                                            error={!!errors.email}
+                                            helperText={errors.email ? errors.email.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="password"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="Password"
+                                            type="password"
+                                            error={!!errors.password}
+                                            helperText={errors.password ? errors.password.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            type='number'
+                                            label="Phone Number"
+                                            error={!!errors.phoneNumber}
+                                            helperText={errors.phoneNumber ? errors.phoneNumber.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="address"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="Address"
+                                            error={!!errors.address}
+                                            helperText={errors.address ? errors.address.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            {securityQuestions && (
+                                <Grid item xs={12}>
+                                    <FormControl fullWidth variant='outlined' error={!!errors.securityQuestion}>
+                                        <InputLabel htmlFor="securityQuestion">Security Question</InputLabel>
+                                        <Controller
+                                            name="securityQuestion"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    fullWidth
+                                                    label="Security Question"
+                                                    inputProps={{
+                                                        id: 'securityQuestion',
+                                                    }}
+                                                >
+                                                    {securityQuestions.map((item, index) => (
+                                                        <MenuItem value={item} key={item}>{item}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            )}
+                                        />
+                                        {errors.securityQuestion && (
+                                            <FormHelperText>{errors.securityQuestion.message}</FormHelperText>
+                                        )}
+                                    </FormControl>
+                                </Grid>
+                            )}
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="securityAnswer"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="Enter Your Answer"
+                                            error={!!errors.securityAnswer}
+                                            helperText={errors.securityAnswer ? errors.securityAnswer.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" fullWidth variant="contained" color="primary">
+                                    Register
+                                </Button>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Button type="submit" fullWidth variant="contained" color="primary">
-                                Register
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </form>
+                    </form>
+                </div>
+
                 {notificationData && notificationData.message != null && (
                     <Notification message={notificationData.message} severity={notificationData.severity} show={true} />
                 )}
                 <ProgressBarOverlay loading={loading} />
             </div>
-        </Container>
+        </div>
+
+        // </Container>
     );
 }
 
